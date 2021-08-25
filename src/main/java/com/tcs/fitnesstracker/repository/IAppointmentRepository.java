@@ -1,4 +1,4 @@
-package com.tcs.fitnesstracker;
+package com.tcs.fitnesstracker.repository;
 import org.springframework.data.repository.CrudRepository;
 
 
