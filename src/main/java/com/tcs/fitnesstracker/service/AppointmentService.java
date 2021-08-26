@@ -4,10 +4,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.tcs.fitnesstracker.Appointment;
-import com.tcs.fitnesstracker.exception.AppointmentNotFoundException;
+import com.tcs.fitnesstracker.User;
 import com.tcs.fitnesstracker.repository.IAppointmentRepository;
+import com.tcs.fitnesstracker.exception.*;
+
+import org.springframework.util.StringUtils;
 
 @Service
 public class AppointmentService implements IAppointmentService {
@@ -15,17 +19,32 @@ public class AppointmentService implements IAppointmentService {
 	IAppointmentRepository appointmentRepo;
 
 	@Override
-
+	@Transactional
 	public void save(Appointment appointment) {
-		appointmentRepo.save(appointment);
+		Appointment a1 = new Appointment();
+		a1.setAmount(appointment.getAmount());
+		a1.setAppointmentId(appointment.getAppointmentId());
+		a1.setPackageName(appointment.getPackageName());
+		a1.setPhysioRequired(appointment.isPhysioRequired());
+		a1.setTrainerName(appointment.getTrainerName());
+//		User u1=new User();
+//		u1.setFirstName("Test User");
+//		a1.setUser(u1);
+		a1.setUser(appointment.getUser());
+
+		// TODO Auto-generated method stub
+		// System.out.println(appointment.getUser().getFirstName());
+		appointmentRepo.save(a1);
 		System.out.println("Appointment saved");
 
 	}
+
 	@Override
 	public Iterable<Appointment> getAllAppointments() {
 		return appointmentRepo.findAll();
 
 	}
+
 	@Override
 	public Optional<Appointment> getAppointment(Integer id) {
 		// TODO Auto-generated method stub
@@ -38,6 +57,7 @@ public class AppointmentService implements IAppointmentService {
 
 	@Override
 	public void deleteAppointment(Integer id) {
+		// TODO Auto-generated method stub
 		Optional<Appointment> appointment = appointmentRepo.findById(id);
 		if (!appointment.isPresent()) {
 			throw new AppointmentNotFoundException("appointment  does not exist");
@@ -45,6 +65,7 @@ public class AppointmentService implements IAppointmentService {
 		appointmentRepo.deleteById(id);
 
 	}
+
 	@Override
 	public void updateAppointment(Appointment appointment, Integer id) {
 		Optional<Appointment> appointmentFromDB = appointmentRepo.findById(id);
